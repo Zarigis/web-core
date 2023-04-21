@@ -9,7 +9,6 @@ import CreationDialog from '@/components/dashboard/CreationDialog'
 import { useRouter } from 'next/router'
 import Relaying from '@/components/dashboard/Relaying'
 import { useCurrentChain } from '@/hooks/useChains'
-import { FEATURES, hasFeature } from '@/utils/chains'
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()

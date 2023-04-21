@@ -16,7 +16,7 @@ export enum FEATURES {
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {
-  return ((chain.features as string[]).includes(feature) || feature == FEATURES.RELAYING)
+  return (chain.features as string[]).includes(feature) || feature == FEATURES.RELAYING
 }
 
 export const getBlockExplorerLink = (
