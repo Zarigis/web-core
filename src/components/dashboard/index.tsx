@@ -14,7 +14,7 @@ import { FEATURES, hasFeature } from '@/utils/chains'
 const Dashboard = (): ReactElement => {
   const router = useRouter()
   const currentChain = useCurrentChain()
-  const supportsRelaying = currentChain && hasFeature(currentChain, FEATURES.RELAYING)
+  const supportsRelaying = true
   const { showCreationModal = '' } = router.query
 
   return (
