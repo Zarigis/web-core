@@ -32,14 +32,6 @@ const SponsoredBy = ({ remainingRelays, tooltip }: { remainingRelays: number; to
             </Tooltip>
           ) : null}
         </Stack>
-        <div>
-          <Typography color="primary.light">
-            Transactions per hour:{' '}
-            <Box component="span" sx={{ fontWeight: '700', color: 'text.primary' }}>
-              {remainingRelays} of {MAX_HOUR_RELAYS}
-            </Box>
-          </Typography>
-        </div>
       </Stack>
     </Box>
   )

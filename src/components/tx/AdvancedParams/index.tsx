@@ -1,5 +1,4 @@
 import GasParams from '@/components/tx/GasParams'
-import SponsoredBy from '@/components/tx/SponsoredBy'
 import { useCurrentChain } from '@/hooks/useChains'
 import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
@@ -75,9 +74,7 @@ const AdvancedParams = ({
               borderTopRightRadius: 0,
             },
           }}
-        >
-          <SponsoredBy remainingRelays={remainingRelays} />
-        </Box>
+        ></Box>
       ) : null}
     </>
   )

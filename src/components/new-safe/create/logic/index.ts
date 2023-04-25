@@ -28,7 +28,6 @@ import { backOff } from 'exponential-backoff'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { formatError } from '@/utils/formatters'
-import { sponsoredCall } from '@/services/tx/sponsoredCall'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -268,6 +267,8 @@ export const getRedirect = (
 }
 
 export const relaySafeCreation = async (chain: ChainInfo, owners: string[], threshold: number, saltNonce: number) => {
+  throw new Error('Relay with safe creation is not supported')
+  /*
   const readOnlyProxyFactoryContract = getReadOnlyProxyFactoryContract(chain.chainId)
   const proxyFactoryAddress = readOnlyProxyFactoryContract.getAddress()
   const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
@@ -303,11 +304,14 @@ export const relaySafeCreation = async (chain: ChainInfo, owners: string[], thre
     saltNonce,
   ])
 
+  
   const relayResponse = await sponsoredCall({
     chainId: chain.chainId,
     to: proxyFactoryAddress,
     data: createProxyWithNonceCallData,
   })
+  
 
-  return relayResponse.taskId
+
+  return relayResponse.taskId*/
 }

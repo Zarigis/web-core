@@ -15,7 +15,6 @@ import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
 import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
-import SponsoredBy from '@/components/tx/SponsoredBy'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
@@ -124,19 +123,6 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
           Batched transactions:
         </Typography>
         <DecodedTxs txs={txsWithDetails} />
-
-        {willRelay ? (
-          <>
-            <Typography mt={2} mb={1} color="primary.light">
-              Gas fees:
-            </Typography>
-            <SponsoredBy
-              remainingRelays={remainingRelays}
-              tooltip="You can only relay multisend transactions containing
-executions from the same Safe Account."
-            />
-          </>
-        ) : null}
 
         {multiSendTxs && <TxSimulation canExecute transactions={multiSendTxs} disabled={submitDisabled} />}
 

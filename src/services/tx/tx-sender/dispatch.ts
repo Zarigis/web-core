@@ -10,7 +10,6 @@ import type { RequestId } from '@safe-global/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { waitForRelayedTx } from '@/services/tx/txMonitor'
-import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
 import { sponsoredCall } from '@/services/tx/sponsoredCall'
 import {
   getAndValidateSafeSDK,
@@ -21,6 +20,7 @@ import {
 } from './sdk'
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { type OnboardAPI } from '@web3-onboard/core'
+import { ethers } from 'ethers'
 
 /**
  * Propose a transaction
@@ -310,10 +310,9 @@ export const dispatchTxRelay = async (
   txId: string,
   gasLimit?: string | number,
 ) => {
-  const readOnlySafeContract = getReadOnlyCurrentGnosisSafeContract(safe)
-
   let transactionToRelay = safeTx
-  const data = readOnlySafeContract.encode('execTransaction', [
+  const data = relayInterface.encodeFunctionData('execTransaction', [
+    safe.address.value,
     transactionToRelay.data.to,
     transactionToRelay.data.value,
     transactionToRelay.data.data,
@@ -327,7 +326,7 @@ export const dispatchTxRelay = async (
   ])
 
   try {
-    const relayResponse = await sponsoredCall({ chainId: safe.chainId, to: safe.address.value, data, gasLimit })
+    const relayResponse = await sponsoredCall({ chainId: safe.chainId, safeAddr: safe.address.value, data, gasLimit })
     const taskId = relayResponse.taskId
 
     if (!taskId) {
@@ -344,6 +343,11 @@ export const dispatchTxRelay = async (
   }
 }
 
+const relayInterface = new ethers.utils.Interface([
+    'function multiSend(address,bytes)',
+    'function execTransaction(address,address,uint256,bytes,uint8,uint256,uint256,uint256,address,address,bytes) payable returns (bool)'
+  ])
+
 export const dispatchBatchExecutionRelay = async (
   txs: TransactionDetails[],
   multiSendContract: MultiSendCallOnlyEthersContract,
@@ -351,16 +355,16 @@ export const dispatchBatchExecutionRelay = async (
   chainId: string,
   safeAddress: string,
 ) => {
-  const to = multiSendContract.getAddress()
-  const data = multiSendContract.contract.interface.encodeFunctionData('multiSend', [multiSendTxData])
+
+  const data = relayInterface.encodeFunctionData('multiSend', [safeAddress,multiSendTxData])
   const groupKey = multiSendTxData
 
   let relayResponse
   try {
     relayResponse = await sponsoredCall({
       chainId,
-      to,
-      data,
+      safeAddr: safeAddress,
+      data
     })
   } catch (error) {
     txs.forEach(({ txId }) => {

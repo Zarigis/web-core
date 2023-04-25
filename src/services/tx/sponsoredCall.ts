@@ -4,7 +4,7 @@ import { type SafeTransactionData } from '@safe-global/safe-core-sdk-types'
 // TODO: import type from relay-service
 export type SponsoredCallPayload = {
   chainId: string
-  to: string
+  safeAddr: string
   data: SafeTransactionData['data']
   gasLimit?: string | number
 }
