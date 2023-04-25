@@ -327,16 +327,18 @@ export const dispatchTxRelay = async (
 
   try {
     const relayResponse = await sponsoredCall({ chainId: safe.chainId, safeAddr: safe.address.value, data, gasLimit })
+
     const taskId = relayResponse.taskId
 
     if (!taskId) {
       throw new Error('Transaction could not be relayed')
     }
 
-    txDispatch(TxEvent.RELAYING, { taskId, txId })
+    txDispatch(TxEvent.PROCESSING, { txHash : taskId, txId })
 
     // Monitor relay tx
     waitForRelayedTx(taskId, [txId], safe.address.value)
+
   } catch (error) {
     txDispatch(TxEvent.FAILED, { txId, error: error as Error })
     throw error
