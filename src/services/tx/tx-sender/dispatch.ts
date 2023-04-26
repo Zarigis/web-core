@@ -55,12 +55,12 @@ export const dispatchTxProposal = async ({
     }
     throw error
   }
-
+/*
   txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, {
     txId: proposedTx.txId,
     signerAddress: txId ? sender : undefined,
   })
-
+*/
   return proposedTx
 }
 
@@ -84,7 +84,7 @@ export const dispatchTxSigning = async (
     throw error
   }
 
-  txDispatch(TxEvent.SIGNED, { txId })
+  // txDispatch(TxEvent.SIGNED, { txId })
 
   return signedTx
 }
@@ -307,7 +307,7 @@ export const dispatchSafeAppsTx = async (
 export const dispatchTxRelay = async (
   safeTx: SafeTransaction,
   safe: SafeInfo,
-  txId: string,
+  txId?: string,
   gasLimit?: string | number,
 ) => {
   let transactionToRelay = safeTx
@@ -328,19 +328,26 @@ export const dispatchTxRelay = async (
   try {
     const relayResponse = await sponsoredCall({ chainId: safe.chainId, safeAddr: safe.address.value, data, gasLimit })
 
-    const taskId = relayResponse.taskId
+    const taskId = relayResponse.taskId    
 
     if (!taskId) {
       throw new Error('Transaction could not be relayed')
     }
 
-    txDispatch(TxEvent.PROCESSING, { txHash : taskId, txId })
+    if(txId){
 
-    // Monitor relay tx
-    waitForRelayedTx(taskId, [txId], safe.address.value)
-
+      txDispatch(TxEvent.RELAYING, { taskId : taskId, txId })
+      
+      // Monitor relay tx
+      waitForRelayedTx(taskId, [txId], safe.address.value)
+    } else {
+      txDispatch(TxEvent.RELAYING, { taskId : taskId, txId: "0" })
+      waitForRelayedTx(taskId, [], safe.address.value)
+    }
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, error: error as Error })
+    if(txId){
+      txDispatch(TxEvent.FAILED, { txId, error: error as Error })
+    }
     throw error
   }
 }

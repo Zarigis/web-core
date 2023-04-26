@@ -195,14 +195,14 @@ const SignOrExecuteForm = ({
         throw new Error('Could not sign transaction')
       }
 
-      id = await proposeTx(signedTransaction)
+      // id = await proposeTx(signedTransaction)
       safeTx = signedTransaction
     }
-
+/*
     if (!id) {
       throw new Error('Transaction could not be proposed')
     }
-
+*/
     trackEvent({ ...MODALS_EVENTS.PROPOSE_TX, label: ExecutionType.RELAYER })
     dispatchTxRelay(safeTx, safe, id, gasLimit)
   }
