@@ -84,7 +84,7 @@ export const dispatchTxSigning = async (
     throw error
   }
 
-  // txDispatch(TxEvent.SIGNED, { txId })
+  txDispatch(TxEvent.SIGNED, { txId })
 
   return signedTx
 }
